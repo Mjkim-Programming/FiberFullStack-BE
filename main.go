@@ -10,6 +10,7 @@ import (
 	"github.com/Mjkim-Programming/FiberWeb/ent/user"
 
 	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/template/html/v2"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -35,8 +36,11 @@ func main() {
 
 	CreateUser(ctx, client, "a8m", 30)
 
+	engine := html.New("./templates", ".html")
+
 	app := fiber.New(fiber.Config{
 		AppName: "Test App v1.0.2",
+		Views: engine,
 	})
 
 	app.Get("/", func (c fiber.Ctx) error {
@@ -62,7 +66,9 @@ func main() {
 			return c.SendString("Cannot find user with name " + c.Params("name") + ".")
 		}
 
-		return c.SendString(u.String())
+		return c.Render("user", fiber.Map{
+			"user": u,
+		})
 	})
 
 	app.Get("/ent/user", func (c fiber.Ctx) error {
