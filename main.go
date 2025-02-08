@@ -1,3 +1,9 @@
+//TODO Remove Template Renders and send json results
+//TODO Add React Frontend to this
+//TODO Write Dockerfile for BE and FE
+//TODO Write docker-compose.yml for running BE, FE, and Redis
+//TODO Change this Code to Use Postgres instead of SQLite
+
 package main
 
 import (
@@ -44,7 +50,9 @@ func main() {
 	})
 
 	app.Get("/", func (c fiber.Ctx) error {
-		return c.SendString("Hello, World 🖐️!")
+		return c.Render("index", fiber.Map{
+			"Text" : "Hello, World 🖐️!",
+		})
 	})
 
 	app.Get("/hello/:name?", func (c fiber.Ctx) error {
