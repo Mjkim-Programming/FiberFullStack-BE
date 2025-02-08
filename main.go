@@ -72,15 +72,11 @@ func main() {
 	})
 
 	app.Get("/ent/user", func (c fiber.Ctx) error {
-		u, err := client.User.Query().All(ctx)
+		u, _ :=  QueryAllUser(ctx, client)
 
-		if err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-				"error": err,
-			})
-		}
-
-		return c.JSON(u)
+		return c.Render("userAll", fiber.Map{
+			"userList": u,
+		})
 	})
 
 	app.Post("/ent/user", func (c fiber.Ctx) error {
@@ -141,5 +137,16 @@ func QueryUserByID(ctx context.Context, client *ent.Client, id int) (*ent.User, 
 	}
 
 	log.Println("User returned: ", u)
+	return u, nil
+}
+
+func QueryAllUser(ctx context.Context, client *ent.Client) ([]*ent.User, error) {
+	u, err := client.User.
+		Query().All(ctx)
+	
+	if err != nil {
+		return nil, fmt.Errorf("failed")
+	}
+
 	return u, nil
 }
